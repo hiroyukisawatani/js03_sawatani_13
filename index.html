@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Chatアプリ</title>
+</head>
+<body>
+
+<!-- コンテンツ表示画面 -->
+<div>
+    <div>
+    名前: <input type="text" id="uname">
+    </div>
+    <div>
+    <textarea name="" id="text" cols="30" rows="10"></textarea>
+    <button id="send">送信</button>
+    </div>
+    <div id="output"></div>
+    </div>
+
+
+
+<p>aa</p>
+
+
+
+
+<!--/ コンテンツ表示画面 -->
+
+
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- JQuery -->
+
+
+<!--** 以下Firebase **-->
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved }
+            from "https://cdnjs.cloudflare.com/ajax/libs/firebase/9.14.0/firebase-database.js";
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCTOE2JvH4VgGm6Q0E4cVlX5J6cSAEmcOA",
+      authDomain: "fir-demo-a4ab3.firebaseapp.com",
+      projectId: "fir-demo-a4ab3",
+      storageBucket: "fir-demo-a4ab3.appspot.com",
+      messagingSenderId: "599922136472",
+      appId: "1:599922136472:web:b81b664583d0fb000987ed"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    // realtimedatabase に接続
+    const db = getDatabase(app); 
+    // realtimedatabase 内のchatを使う
+    const dbRef = ref(db, "chat");  
+
+    // #sendがクリックされたら　名前・本文情報を取得する
+    $("#send").on("click", function () {
+        const msg = {
+            uname: $("#uname").val(),
+            text: $("#text").val()
+        };
+        const newPostRef = push(dbRef);
+        set(newPostRef, msg);
+    });
+
+    // DBからメッセージを取得し表示する
+    onChildAdded(dbRef, function (data){
+      const key = data.key
+      const msg = data.val();
+      console.log(msg);
+      const h = `<p>${msg.uname}<br>${msg.text}</p>`
+      $("#output").append(h)
+    })
+
+    $("#text").on("keydown", function(e){
+      console.log(e.keyCode);
+      if(e.keyCode  === 13){
+        const msg = {
+            uname: $("#uname").val(),
+            text: $("#text").val()
+        };
+        const newPostRef = push(dbRef);
+        set(newPostRef, msg);
+      }
+    })
+
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
